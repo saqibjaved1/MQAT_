@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Modular Quantization-Aware Training for 6D Object Pose Estimation">
+  <meta name="keywords" content="Quantization, 6DPose, QAT">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Modular Quantization-Aware Training for 6D Object Pose Estimation</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script> -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+<section class="hero" style="background: linear-gradient(to right, #d2d2ac, #90c7c4);">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+
+          <h1 class="title is-1 publication-title">Modular Quantization-Aware Training for 6D Object Pose Estimation</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/saqibjaved7/">Saqib Javed</a>,</span>
+            <span class="author-block">
+              <a href="https://charlieleee.github.io">Chengkun Li</a>,</span>
+            <span class="author-block">
+              <a href="https://spaceguy-price.github.io/">Andrew Price</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://yinlinhu.github.io/">Yinlin Hu</a>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.datascience.ch/people/mathieu-salzmann">Mathieu Salzmann</a>,
+            </span>
+          </div>
+
+           <img src="./static/images/cvlab_logo-removebg-preview.png" alt="CVLAB logo." style="width:10%; height:auto;">
+           <img src="./static/images/favicon.svg" alt="EPFL logo." style="width:10%; height:auto;">
+           <img src="./static/images/Magic_Leap_logo.svg.png" alt="MagicLeap logo." style="width:10%; height:auto;">
+
+
+<!--          <div class="is-size-5 publication-authors">-->
+<!--            <span class="author-block"><sup>1</sup>CVLab EPFL,</span>-->
+<!--            <span class="author-block"><sup>2</sup>Magic Leap</span>-->
+<!--          </div>-->
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://openreview.net/forum?id=lIy0TEUou7"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span> -->
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=EBNr0qNem8U&ab_channel=YapaPrice"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/saqibjaved1/MQAT"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link.
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <!-- <video id="teaser" autoplay muted loop playsinline height="100%">
+        <source src="./static/videos/teaser.mp4"
+                type="video/mp4">
+      </video> -->
+      <img src="./static/images/MQAT teaser.svg" alt="MQAT teaser image." style="width:100%; height:auto;">
+      <h2 class="subtitle has-text-centered">
+        In contrast to uniform and mixed-precision quantization, MQAT accounts for the modularity of typical 6D object pose estimation frameworks. MQAT not only significantly reduces the model's memory footprint but also leads to an accuracy boost (measured by ADI). </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Edge applications, such as collaborative robotics and spacecraft rendezvous, 
+            demand efficient 6D object pose estimation on resource-constrained embedded platforms. 
+            Existing 6D object pose estimation networks are often too large for such deployments, 
+            necessitating compression while maintaining reliable performance. 
+          </p>
+          <p>
+            To address this challenge, we introduce Modular Quantization-Aware Training (<span class="small_caps">MQAT</span>), an adaptive and 
+            mixed-precision quantization-aware training strategy that exploits the modular structure of modern 6D object pose estimation
+            architectures. <span class="small_caps">MQAT</span> guides a systematic gradated modular quantization sequence and determines module-specific bit precisions, leading to quantized models that outperform those
+            produced by state-of-the-art uniform and mixed-precision quantization techniques.  
+          </p>
+          <p>
+          Our experiments showcase the generality of <span class="small_caps">MQAT</span> across datasets, architectures, and quantization algorithms. Additionally, we observe that <span class="small_caps">MQAT</span> quantized models can achieve an accuracy
+          boost (> 7% ADI-0.1d) over the baseline full-precision network while reducing model size 
+          by a factor of 4x or more.
+          </p> 
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+    
+    <!-- Key points -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <!-- Key Features. -->
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Keypoints (TL; DR)</h2>
+            <div class="content has-text-justified">
+
+              <!-- Point 1 -->
+              <div style="background-color: #ffefd5; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                <p>
+                  <b style="color: #ff8c00;"><i class="fas fa-cogs"></i> Modular Quantization-Aware Training (MQAT)</b>: MQAT leverages the modular structure of 6D object pose estimation networks to apply mixed-precision quantization, optimizing performance while minimizing computational costs.
+                </p>
+              </div>
+
+              <!-- Point 2 -->
+              <div style="background-color: #e0f7fa; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                <p>
+                  <b style="color: #00796b;"><i class="fas fa-microchip"></i> Enhanced Edge Efficiency</b>: Specifically designed for resource-constrained edge devices, MQAT supports applications like collaborative robotics and spacecraft rendezvous, providing efficient and accurate 6D object pose estimation.
+                </p>
+              </div>
+
+              <!-- Point 3 -->
+              <div style="background-color: #e8eaf6; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                <p>
+                  <b style="color: #3f51b5;"><i class="fas fa-exchange-alt"></i> Quantization Flow Control</b>: MQAT introduces a unique quantization flow control that optimally sequences the quantization of different modules (e.g., Backbone, Rotation Head, and PnP-Patch), ensuring minimal performance loss during model compression.
+                </p>
+              </div>
+
+              <!-- Point 4 -->
+              <div style="background-color: #fff9c4; padding: 15px; border-radius: 8px; margin-bottom: 10px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                <p>
+                  <b style="color: #fbc02d;"><i class="fas fa-compress-arrows-alt"></i> Superior Compression with High Accuracy</b>: Compared to traditional quantization techniques like LSQ and HAWQ-V3, MQAT achieves higher accuracy (up to 7% boost in ADI-0.1d) with greater compression, reducing model sizes by up to 4x or more.
+                </p>
+              </div>
+
+              <!-- Point 5 -->
+              <div style="background-color: #e1bee7; padding: 15px; border-radius: 8px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                <p>
+                  <b style="color: #8e24aa;"><i class="fas fa-globe"></i> Broad Applicability Across Datasets and Architectures</b>: MQAT demonstrates versatility by achieving improvements in both 6D pose estimation and object detection tasks, validated across multiple datasets.
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <!--/ Key Features. -->
+      </div>
+    </section>
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <div class="columns is-centered">
+
+      <!-- Quantization sequence. -->
+      <div class="column">
+        <div class="content">
+          <h2 class="title is-3">Quantization Sequence Matters</h2>
+          <p>
+            A heuristic search of quantization flow sequences to demonstrate quantization flow optimality for K=3 module WDR. 
+          </p>
+          <!-- <video id="dollyzoom" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/dollyzoom-stacked.mp4"
+                    type="video/mp4">
+          </video> -->
+        <img src="./static/images/cube.svg" alt="Quantization flow." style="width:100%; height:auto;">
+        </div>
+      </div>
+      <!-- Quantization sequence. -->
+
+      <!-- Performance between methods. -->
+      <div class="column">
+        <h2 class="title is-3">Performance Comparison between Methods</h2>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              Comparison between our proposed MQAT, uniform QAT (LSQ), and layer-wise mixed-precision QAT (HAWQ-V3).
+            </p>
+            <!-- <video id="matting-video" controls playsinline height="100%">
+              <source src="./static/videos/matting.mp4"
+                      type="video/mp4">
+            </video> -->
+          <img src="./static/images/compression_factor.svg" alt="Quantization flow." style="width:100%; height:auto;">
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <!-- Performance between methods. -->
+
+    <!-- Architecture generality. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h3 class="title is-3">Architecture Generality</h2>
+        <div class="content has-text-justified">
+          <p>
+            MQAT demonstrates its adaptability and effectiveness across various <b>single-stage</b> and <b>multi-stage</b> 6D
+            object pose estimation architectures.
+          </p>
+        </div>
+
+        <!-- Single stage. -->
+        <h4 class="title is-4">Single-stage Architecture</h3>
+        <div class="content has-text-justified">
+          
+          <p>
+            In Table 1, we compare several <b>single-stage</b> PnP architectures on the SwissCube dataset. To demonstrate the generality 
+            of our performance enhancement, we apply MQAT to aggressively quantize the FPN of both CA-SpaceNet and WDR. 
+            We demonstrate an accuracy improvement of 4.5%, 4.4% and 4.5% for Near, Medium and Far images, respectively, on CA-SpaceNet, 
+            resulting in a total testing set accuracy improvement of 3.3%. Recall the already presented total testing set accuracy improve- ment of 5.0% for WDR. 
+            Previously, the full precision CA-SpaceNet had shown a performance improvement over the full precision WDR, but WDR sees greater gains from the application of MQAT.
+          </p>
+          <!-- Single stage -->
+          <div class="table-container">
+          <table class="table is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Network</th>
+                <th>Near</th>
+                <th>Medium</th>
+                <th>Far</th>
+                <th>All</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>SegDriven-Z</td>
+                <td>41.1</td>
+                <td>22.9</td>
+                <td>7.1</td>
+                <td>21.8</td>
+              </tr>
+              <tr>
+                <td>DLR</td>
+                <td>52.6</td>
+                <td>45.4</td>
+                <td>29.4</td>
+                <td>43.2</td>
+              </tr>
+              <tr>
+                <td>CA-SpaceNet</td>
+                <td>91.0</td>
+                <td>86.3</td>
+                <td>61.7</td>
+                <td>79.4</td>
+              </tr>
+              <tr class="highlight">
+                <td>CA-SpaceNet*</td>
+                <td>95.5</td>
+                <td>90.7</td>
+                <td>66.2</td>
+                <td>82.7</td>
+              </tr>
+              <tr>
+                <td>WDR</td>
+                <td>92.4</td>
+                <td>84.2</td>
+                <td>61.3</td>
+                <td>78.8</td>
+              </tr>
+              <tr class="highlight">
+                <td>WDR*</td>
+                <td>96.1</td>
+                <td>91.5</td>
+                <td>68.2</td>
+                <td>83.8</td>
+              </tr>
+              <tr>
+                  
+              </tr>
+            </tbody>
+          </table>
+          </div>
+          <p class="caption">Table 1: Comparison with the state-of-the-art on SwissCube. 
+            We report ADI-0.1d scores for three different depth ranges. A '*' indicates applying MQAT with 2-bit precision 
+            FPN to the model.
+          </p>
+
+          <p>
+            Figure 1 illustrates the WDR network with MQAT applied in an 8-2-8 quantization scheme. 
+            For comparison, the full-precision model (without quantization) is also shown.
+          </p>
+          <div style="text-align: center;">
+            <img src="./static/images/Space_visualization.svg" alt="CA-SpaceNet visualization." style="width:80%; height:auto;">
+          </div>
+          <p class="caption">Figure 1: Comparison between our proposed MQAT paradigm, and full-
+            precision network. The model applying MQAT yields predictions that are on par with, or more concentrated
+            than its full-precision counterpart.
+
+          <p>
+            In addition, published accuracy results for a uniform QAT quantized CA-Space 
+            network, shared in Table 2. Specifically, CA-SpaceNet explored three quantization modes 
+            (B, BF and BFH). These correspond to quantizing the backbone, quantizing the backbone and 
+            FPN (paired), and quantizing the whole network (uniformly), respectively.
+          </p>
+
+          <div class="table-container">
+          <table class="table is-hoverable is-fullwidth ">
+              <thead>
+                <tr>
+                  <th>Quantization Method</th>
+                  <th>ADI-0.1d</th>
+                  <th>Compression</th>
+                  <th>Bit-Precisions (B-F-H)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>LSQ</td>
+                  <td>79.4</td>
+                  <td>1x</td>
+                  <td>32-32-32</td>
+                </tr>
+                <tr>
+                  <td>LSQ B</td>
+                  <td>76.2</td>
+                  <td>2.2x</td>
+                  <td>8-32-32</td>
+                </tr>
+                <tr>
+                  <td>LSQ BF</td>
+                  <td>75.0</td>
+                  <td>3.2x</td>
+                  <td>8-8-32</td>
+                </tr>
+                <tr>
+                  <td>LSQ BFH</td>
+                  <td>74.7</td>
+                  <td>4.0x</td>
+                  <td>8-8-8</td>
+                </tr>
+                <tr class="highlight">
+                  <td>MQAT (Ours)</td>
+                  <td>82.7</td>
+                  <td>4.7x</td>
+                  <td>8-2-8</td>
+                </tr>
+                <!-- Additional rows based on your image data -->
+                <tr class="highlight">
+                  <td>MQAT (Ours)</td>
+                  <td>80.2</td>
+                  <td>8.2x</td>
+                  <td>4-2-4</td>
+                </tr>
+                <tr>
+                  <td>LSQ BFH</td>
+                  <td>68.7</td>
+                  <td>10.6x</td>
+                  <td>3-3-3</td>
+                </tr>
+                      
+                <tr>
+                  
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="caption">Table 2: CA-SpaceNet Published Quantization vs MQAT. We report ADI scores on the SwissCube
+            dataset sorted by the compression factor of the network, for MQAT methods, we use quantization flow
+            F→H→B.</p>
+        </div>
+
+        <!-- Multi stage. -->
+        <h4 class="title is-4">Multi-stage Architecture</h3>
+          <div class="content has-text-justified">
+            
+            <p>
+              In Table 3, we demonstrate
+              the performance of our method on the state-of-the-art 6D object pose estimation network, the two-stage
+              ZebraPose network.
+            </p>
+
+            <div class="table-container">
+              <table class="table is-hoverable is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Quantization Method</th>
+                    <th>ADD 0.1d</th>
+                    <th>Compression</th>
+                    <th>Bit-Precisions</th>
+                    <th>Quantization Flow</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Full Precision</td>
+                    <td>76.90</td>
+                    <td>1×</td>
+                    <td>Full precision</td>
+                    <td>N/A</td>
+                  </tr>
+                  <tr>
+                    <td>HAWQ-V3</span></td>
+                    <td>71.11</td>
+                    <td>4×</td>
+                    <td>Mixed (layer-wise)</td>
+                    <td>N/A</td>
+                  </tr>
+                  <tr>
+                    <td>HAWQ-V3</span></td>
+                    <td>69.87</td>
+                    <td>4.60×</td>
+                    <td>Mixed (layer-wise)</td>
+                    <td>N/A</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td>MQAT</td>
+                    <td><b>72.54</b></td>
+                    <td>4.62×</td>
+                    <td>8-4 (B-D)</td>
+                    <td>D → B</td>
+                  </tr>
+                  <tr>
+
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="caption">
+              Table 3: Quantization of ZebraPose. We report ADD scores on the LM-O dataset
+              and compare MQAT to mix-precision quantization (HAWQ-V3).
+            </p>
+  
+            <p>
+              In Table 4, we evaluated GDR-Net using existing uniform and mixed-precision quantization 
+              methods alongside our MQAT approach. The ADD-0.1d metric was used for 6D object pose estimation 
+              on the O-Linemod dataset, following the methodology of Wang et al. MQAT outperforms both LSQ and HAWQ-V3, 
+              achieving superior results even with a slightly more compressed network.
+            </p>
+  
+            <div class="table-container">
+              <table class="table is-hoverable is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Quantization Method</th>
+                    <th>ADD 0.1d</th>
+                    <th>Compression</th>
+                    <th>Bit-Precisions</th>
+                    <th>Quantization Flow</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Full Precision</td>
+                    <td>56.1</td>
+                    <td>1×</td>
+                    <td>Full precision</td>
+                    <td>N/A</td>
+                  </tr>
+                  <tr>
+                    <td>LSQ</td>
+                    <td>50.7</td>
+                    <td>4.57×</td>
+                    <td>Uniform (7-bit)</td>
+                    <td>N/A</td>
+                  </tr>
+                  <tr>
+                    <td>HAWQ-V3</span></td>
+                    <td>50.3</td>
+                    <td>4.9×</td>
+                    <td>Mixed (layer-wise)</td>
+                    <td>N/A</td>
+                  </tr>
+                  <tr class="highlight">
+                    <td>MQAT</td>
+                    <td><b>51.8</b></td>
+                    <td>4.97×</td>
+                    <td>8-4-4 (B-R-P)</td>
+                    <td>R → P → B</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="caption">Table 4: Quantization of GDR-Net. We report ADD scores on the LM-O dataset
+              and compare MQAT to uniform (LSQ) and mix-precision quantization (HAWQ-V3). B, R and P indicates
+              Backbone, Rotation Head and PnP-Patch modules.</p>
+          </div>
+
+        <!-- Task generality for object detection -->
+        <h3 class="title is-3">Generality of MQAT in Object Detection Problem</h3>
+        <div class="content has-text-justified">
+          <p>
+            In our study, while the primary focus is on 6D pose estimation, where our method's efficacy is already
+            demonstrated, we further extend our evaluation to object detection tasks. This extension is aimed at
+            underscoring the generality of our approach.
+          </p>
+          <p>
+            To this end, we applied our quantization technique to the Faster R-CNN network, which utilizes a ResNet-
+            50 backbone, a widely recognized model in object detection tasks. Our evaluation was conducted on the
+            comprehensive COCO dataset, a benchmark for object detection.  
+          </p>
+
+          <div class="table-container">
+            <table class="table is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th>Network</th>
+                  <th>QAT Method</th>
+                  <th>mAP</th>
+                  <th>Compression</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="5">FasterRCNN</td>
+                  <td>Full Precision</td>
+                  <td>37.9</td>
+                  <td>1x</td>
+                </tr>
+                <tr>
+                  <td>FQN</td>
+                  <td>32.4</td>
+                  <td>8x</td>
+                </tr>
+                <tr>
+                  <td>INQ</td>
+                  <td>33.4</td>
+                  <td>8x</td>
+                </tr>
+                <tr>
+                  <td>LSQ</td>
+                  <td>33.8</td>
+                  <td>8x</td>
+                </tr>
+                <tr>
+                  <td>MQAT (ours)</td>
+                  <td>35.1</td>
+                  <td>8x</td>
+                </tr>
+      
+                <tr>
+                  <td rowspan="3">EfficientDet-D0</td>
+                  <td>Full Precision</td>
+                  <td>33.16</td>
+                  <td>1x</td>
+                </tr>
+                <tr>
+                  <td>N2UQ</td>
+                  <td>20.11</td>
+                  <td>10x</td>
+                </tr>
+                <tr>
+                  <td>MQAT (ours)</td>
+                  <td>21.67</td>
+                  <td>10x</td>
+                </tr>
+      
+                <tr>
+                  
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="caption">Table 3: Quantization for Object Detection. We evaluate the given networks on COCO dataset and
+            report mAP.</p>
+        </div>
+        <div style="text-align: center;">
+        <img src="./static/images/object_detection.svg" alt="Result visualization" style="width:90%; height:auto; margin-bottom: 10px;">
+        </div>
+        <p class="long-caption">Figure 2: Visualization of the Difference in Object Detection Performanceon MSCOCO between N2UQ and MQAT at the same compression ratio.
+</section>
+
+
+<!-- BibTex -->
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{javed2024modular,
+  author    = {Javed, Saqib and Li, Chengkun and Price, Andrew and Hu, Yinlin and Salzmann, Mathieu},
+  title     = {Modular Quantization-Aware Training for 6D Object Pose Estimation},
+  journal   = {TMLR},
+  year      = {2024},
+}
+    </code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is adapted from <a
+              href="https://nerfies.github.io/">Nerfies</a> licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            .
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
